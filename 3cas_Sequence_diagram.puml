@@ -1,0 +1,39 @@
+@startuml Cas 2
+title Produir Vehicle
+actor administrador 
+participant "user:Fàbrica" as fabric
+participant "inventari_fabrica:Inventari_Peces" as inventari_fabrica
+
+group Setup (construction)
+    administrador -> fabric: <<create>>
+    fabric -> inventari_fabrica: <<create>>
+end
+
+group Consulta disponibilitat peça
+
+    administrador -> fabric: consulta_peces_inventari(codi)
+    loop fins trobar el codi o recorrer tot el diccionari
+    fabric -> inventari_fabrica: buscar(codi)
+    end
+    alt s'ha trobat el codi 
+    inventari_fabrica --> administrador: True
+    else no s'ha trobat el codi
+    inventari_fabrica --> administrador: False
+    end
+end
+create "inventari_subministrador" as inventari_subministrador
+administrador -> inventari_subministrador: <<create>>
+create "subministrador:Subministrador" as subministrador
+administrador -> subministrador: <<create>>
+administrador -> subministrador: setInventari(inventari_subministrador)
+note right: subministrador precisa de inventari
+group Consulta inventari proveïdor
+    administrador -> fabric: consulta_peces_proveidor(codi, subministrador)
+    fabric -> subministrador: Getinventari()
+    subministrador --> fabric: inventari
+    loop recorrer totes les peces 
+    fabric -> inventari_fabrica: mostrar_peces()
+    end
+
+end
+@enduml 
