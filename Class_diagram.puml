@@ -9,7 +9,7 @@ abstract class Model{
 -cilindrada: float
 -etiqueta_contaminació: str
 -rodes: int
--peces: dict
+-peces: Inventari_Peces
 }
 class Model_cotxe {
     -portes: int
@@ -42,30 +42,41 @@ class Subministrador {
 }
 class Inventari_Peces {
     -inventari: dict
+    +afegir_peces_inventari(peça,quantitat)
+    +mostrar_peces()
+}
+class Linia_inventari {
+    -peça: Peces
+    -quantitat: int
 }
 class Registre_producció {
     -vehicle: Vehicle_produït
     -data: date
-    -linia_producció: Linia_Producció
+    -linia_produccio: Linia_Producció 
+    +data_coincidence(data) -> bool
+    +model_coincidence(model) -> bool
 }
 class Vehicle_produït {
     -Model: Model 
     -num_serie: int
     -color: str
+    +GetModel() -> Model
 }
 class Fàbrica {
 -inventari_peces: Inventari_Peces
 -registre_models: list
 -registre_producció: list
 +afegir_model(model)
-+produir_vehicle(model, num_serie, color) -> Vehicle_produït 
-+consulta_peces_inventari(codi)
-+consulta_peces_proveidor(codi, inventari_proveidor)
++afegir_peces_inventari(peça, quantitat)
++afegir_vehicle_produit(vehicle_produit, date, linia_produccio) -> Vehicle_produït 
++consulta_peces_inventari(codi): bool
++consulta_peces_proveidor(codi, subministrador)
 +consulta_vehicle_per_data(data, model)
 +consulta_posibilitat_produccio(model): bool
 }
 Model <|-- Model_cotxe
 Model <|-- Model_motos
+Model *--> Inventari_Peces
 Vehicle_produït o-->Model
 Registre_producció o--> Vehicle_produït
 Registre_producció o--> Linia_Producció
@@ -73,8 +84,8 @@ Fàbrica o--> Registre_producció
 Peces o--> Subministrador
 Inventari_Peces <--o Subministrador
 Inventari_Peces *--> Peces
+Inventari_Peces *--> Linia_inventari
 Fàbrica o-->Inventari_Peces
-Model o-->Peces
 
 @enduml
 
