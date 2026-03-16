@@ -13,7 +13,7 @@ group Setup (construction)
     administrador -> fabric: <<create>>
     administrador -> inventari: <<create>>
     administrador -> fabric: setinventari(inventari)
-    note right: Afegim el inventari a la fabrica
+    note right: Afegim el inventari a la fabrica (ho posem així per donar émfasi a que el inventari es pot crear externament a la clase i així simplifiquem el anar afegint peces)
     administrador -> inventarisubministrador: <<create>>
     administrador -> subministrador: <<create>>
     administrador -> subministrador: setinventari(inventari_subministrador)

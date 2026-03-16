@@ -10,7 +10,7 @@ abstract class Model{
 -/etiqueta_contaminació: str
 -rodes: int
 -peces: Inventari_Peces
-+getmotor_electric: bool
++getmotor_electric(): bool
 +getpeces(): Inventari_Peces
 +setpeces(inventari: Inventari_Peces)
 +calcular_etiqueta(motor_electric: bool, tipus_combustible: str): str

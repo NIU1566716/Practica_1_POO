@@ -11,9 +11,9 @@ participant "model:Model" as model
 participant "linia:Linia_Producció" as linia
 
 group Setup (construction)
-    adminstrador -> inventari_fabrica: <<create>>
+    administrador -> inventari_fabrica: <<create>>
     administrador -> fabric: <<create>>
-    fabric -> fabric: setinventari(inventari_fabrica)
+    administrador -> fabric: setinventari(inventari_fabrica)
     administrador -> inventari_subministrador: <<create>>
     administrador -> subministrador: <<create>>
     administrador -> subministrador: setinventari(inventari_subministrador)
