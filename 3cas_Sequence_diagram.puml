@@ -1,18 +1,20 @@
-@startuml Cas 2
-title Produir Vehicle
+@startuml Cas 3
+title Consultar Peça
 actor administrador 
 participant "user:Fàbrica" as fabric
 participant "inventari_fabrica:Inventari_Peces" as inventari_fabrica
 
 group Setup (construction)
+    administrador -> inventari_fabrica: <<create>>
     administrador -> fabric: <<create>>
-    fabric -> inventari_fabrica: <<create>>
+    administrador -> fabric: setinventari(inventari_fabrica)
+
 end
 
 group Consulta disponibilitat peça
 
     administrador -> fabric: consulta_peces_inventari(codi)
-    loop fins trobar el codi o recorrer tot el diccionari
+    loop while fins trobar el codi o recorrer tot el diccionari
     fabric -> inventari_fabrica: buscar(codi)
     end
     alt s'ha trobat el codi 

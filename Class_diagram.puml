@@ -4,26 +4,32 @@ class Linia_Producció {
     id: str
 }
 abstract class Model{
--marca: str 
+-nom: str 
 -motor_electric: bool
 -cilindrada: float
--etiqueta_contaminació: str
+-/etiqueta_contaminació: str
 -rodes: int
 -peces: Inventari_Peces
++getmotor_electric: bool
++getpeces(): Inventari_Peces
++setpeces(inventari: Inventari_Peces)
++calcular_etiqueta(motor_electric: bool, tipus_combustible: str): str
 }
 class Model_cotxe {
     -portes: int
     -tipus_canvi_marxes: str
     -tipus_combustible: str
-    -rodes = int 4
+    -rodes: int = 4
+    +setportes(portes:int)
+    +calcular_etiqueta(motor_electric: bool, tipus_combustible: str) -> str
 }
 class Model_motos {
     -motor_electric: bool = False
     -tipus_rodes: str
     -tipus_carnet_conduir: str 
     -tipus_combustible: str = "gasolina"
-    -etiqueta_contaminació: str = B
     -rodes: int = 2
+    +calcular_etiqueta(motor_electric: bool, tipus_combustible: str) -> str()
 
 }
 class Peces {
@@ -31,6 +37,7 @@ class Peces {
     -nom: str
     -descripció: str
     -subministrador: Subministrador
+    +getcodi(): int
 }
 class Subministrador {
     -nom: str
@@ -38,21 +45,31 @@ class Subministrador {
     -adreça: str
     -país: str
     -inventari: Inventari_Peces
+    +getpeces(): Inventari_Peces
+    +setpeces(inventari: Inventari_Peces)
+    +elimina_peces(codi, quantitat)
 
 }
 class Inventari_Peces {
     -inventari: dict
+    +getinventari(): dict
     +afegir_peces_inventari(peça,quantitat)
+    +elimina_peces(codi, quantitat)
     +mostrar_peces()
 }
 class Linia_inventari {
     -peça: Peces
     -quantitat: int
+    +getquantitat(): int
+    +setquantitat(quantitat:int)
 }
 class Registre_producció {
     -vehicle: Vehicle_produït
-    -data: date
+    -\data: date
     -linia_produccio: Linia_Producció 
+    +calcular_data(): date
+    +getdate(): date
+    +getvehicle(): vehicle 
     +data_coincidence(data) -> bool
     +model_coincidence(model) -> bool
 }
@@ -66,12 +83,15 @@ class Fàbrica {
 -inventari_peces: Inventari_Peces
 -registre_models: list
 -registre_producció: list
-+afegir_model(model)
-+afegir_peces_inventari(peça, quantitat)
-+afegir_vehicle_produit(vehicle_produit, date, linia_produccio) -> Vehicle_produït 
-+consulta_peces_inventari(codi): bool
-+consulta_peces_proveidor(codi, subministrador)
-+consulta_vehicle_per_data(data, model)
++getinventari(): Inventari_Peces
++setinventari(inventari:Inventari_Peces)
++afegir_model(model: Model)
++afegir_peces_inventari(peça:Peces, quantitat:int)
++afegir_vehicle_produit(vehicle: Vehicle_produït, data: date, linia: Linia_Producció)
++elimina_peces(codi:int, quantitat:int)
++consulta_peces_inventari(codi:int): bool
++consulta_peces_proveidor(codi:int, subministrador:Subministrador): bool
++consulta_vehicle_per_data(data:date, model:Model): int
 +consulta_posibilitat_produccio(model): bool
 }
 Model <|-- Model_cotxe
@@ -83,7 +103,7 @@ Registre_producció o--> Linia_Producció
 Fàbrica o--> Registre_producció
 Peces o--> Subministrador
 Inventari_Peces <--o Subministrador
-Inventari_Peces *--> Peces
+Inventari_Peces o--> Peces
 Inventari_Peces *--> Linia_inventari
 Fàbrica o-->Inventari_Peces
 

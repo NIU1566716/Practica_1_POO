@@ -1,0 +1,41 @@
+@startuml Cas 4
+title Models per data
+actor administrador 
+participant "user:Fàbrica" as fabric
+participant "inventari_fabrica:Inventari_Peces" as inventari_fabrica
+participant "inventari_subministrador" as inventari_subministrador
+participant "subministrador_peces:Subministrador" as subministrador
+participant "peces:Peces" as peces
+participant "inventari_model:Inventari_Peces" as inventari_model
+participant "model:Model" as model
+participant "linia:Linia_Producció" as linia
+participant "vehicle:Vehicle_produït" as vehicle
+participant "registre:Registre_Producció" as registre
+
+group Setup (construction)
+administrador -> fabric: <<create>>
+fabric -> Inventari_Peces: <<create>>
+end
+
+group Revisar models produits per dates 
+    loop fins revisar tots els models
+    administrador -> fabric: consulta_vehicle_per_data(data, model)
+    fabric -> registre: data_coincidence(data)
+    note right: consulta si coincideix data
+    alt Coincideix la data
+    registre -> vehicle: model_coincidence(model)
+    registre -> vehicle: GetModel()
+    vehicle --> registre: Model
+    note right: consulta si hi ha coincidencia de model
+    alt Coincideix model
+    registre --> fabric: True
+    else No coincidex model
+    registre --> fabric: False
+    end
+    else No coincidex data
+    registre --> fabric: False
+    end
+    end
+    note right: Utilitzem un comptador que s'incrementa amb True
+    fabric --> administrador: comptador
+end

@@ -1,23 +1,31 @@
-@startuml Primer cas d'ús
+@startuml Cas 1
 title Afegir un nou model de vehicle
 actor administrador 
 participant "user:Fàbrica" as fabric
 participant "inventari:Inventari_Peces" as inventari
+participant "inventari_subministrador:Inventari_Peces" as inventarisubministrador
+participant "subministrador:Subministrador" as subministrador
 participant "peces_cotxe:Peces" as peces
 participant "inventari_cotxe:Inventari_Peces" as inventaricotxe
 participant "mcotxe:Model_cotxe" as cotxe
 
 group Setup (construction)
     administrador -> fabric: <<create>>
-    fabric -> inventari: <<create>>
+    administrador -> inventari: <<create>>
+    administrador -> fabric: setinventari(inventari)
+    note right: Afegim el inventari a la fabrica
+    administrador -> inventarisubministrador: <<create>>
+    administrador -> subministrador: <<create>>
+    administrador -> subministrador: setinventari(inventari_subministrador)
     administrador -> peces: <<create>>
-    administrador -> inventari_cotxe: <<create>>
+    administrador -> inventaricotxe: <<create>>
     administrador -> cotxe: <<create>>
     note right 
     En el cas de model cotxe, rodes ve fixat a 4 
     i la etiqueta de contaminació es calcula mit-
     jançant el tipus de combustible i si es elèc-
-    tric o no.
+    tric o no. La funció calcular_etiqueta(motor
+    _electric:bool, tipus_combustible: str)
     end note
 end
 
@@ -26,68 +34,4 @@ group Afegir model
     note right : S'afegeix el model al registre de models
 end
 
-
-
-group Revisar models produits per dates 
-    loop fins revisar tots els models
-    administrador -> fabric: consulta_vehicle_per_data(data, model)
-    fabric -> registre: data_coincidence(data)
-    note right: consulta si coincideix data
-    alt Coincideix la data
-    registre -> vehicle: model_coincidence(model)
-    registre -> vehicle: GetModel()
-    vehicle --> registre: Model
-    note right: consulta si hi ha coincidencia de model
-    alt Coincideix model
-    registre --> fabric: True
-    else No coincidex model
-    registre --> fabric: False
-    end
-    else No coincidex data
-    registre --> fabric: False
-    end
-    end
-    note right: Utilitzem un comptador que s'incrementa amb True
-    fabric --> administrador: comptador
-end
-
-create "peces_model:Peces" as peces2
-administrador -> peces2: <<create>>
-create "inventari_model:Inventari_peces" as inventari2
-administrador -> inventari2: <<create>>
-create "model:Model" as model
-administrador -> model: <<create>>
-group Consulta de si es posible produir un model
-    administrador -> fabric: consulta_posibilitat_produccio(model)
-    fabric -> model: GetInventari()
-    model --> fabric: Inventari_model
-    loop Revisem totes les peces a l'inventari del model o fins que hi hagi una falla
-    fabric -> inventari2:GetPeces()
-    inventari2 -> fabric: peces_model
-    note right: retorna una de les peces, que agrupem a peces_model
-    fabric -> peces2: getCodi()
-    peces2 --> fabric: codi
-    fabric -> inventari: consulta_peces_inventari(codi)
-        alt Si la peça esta a l'inventari
-        inventari --> fabric: True 
-        fabric -> inventari: GetCodiQuantitat(codi)
-        inventari --> fabric: quantitat
-        fabric -> inventari2: GetCodiQuantitat(codi)
-        inventari2 --> fabric: quantitat
-            alt les quantitats no coincideixen
-            fabric --> administrador: False
-            else les quantitats coincideixen, no canviem res, continuem amb el bucle fins que falli o hagem visitat totes les peces necesaries per al model
-            end
-        else La peça no esta a l'inventari
-        inventari --> fabric: False
-        fabric --> administrador: False
-        end
-
-    end
-    
-note right: Estem a un bucle while que s'aturà si ni hi ha coincidència
-alt Si s'ha recorregut tot el bucle sense falles
-fabric --> administrador: True
-end
-end
 @enduml 

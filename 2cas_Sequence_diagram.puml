@@ -11,19 +11,20 @@ participant "model:Model" as model
 participant "linia:Linia_Producció" as linia
 
 group Setup (construction)
+    adminstrador -> inventari_fabrica: <<create>>
     administrador -> fabric: <<create>>
-    fabric -> inventari_fabrica: <<create>>
+    fabric -> fabric: setinventari(inventari_fabrica)
     administrador -> inventari_subministrador: <<create>>
     administrador -> subministrador: <<create>>
-    administrador -> subministrador: setInventari(inventari_subministrador)
+    administrador -> subministrador: setinventari(inventari_subministrador)
     note right: subministrador precisa de inventari
     administrador -> peces: <<create>>
-    administrador -> peces: setSubministrador(subministrador)
+    administrador -> peces: setsubministrador(subministrador)
     note right: peces precisa de subministrador
     administrador -> inventari_model: <<create>>
     administrador -> inventari_model: afegir_peces_inventari(peces)
     administrador -> model: <<create>>
-    administrador -> model: setInventari(inventari_model)
+    administrador -> model: setinventari(inventari_model)
     note right: model necesita d'un inventari de peces que determina quinas peces necesita
     administrador -> linia: <<create>>
     note right: una linia de producció es necesaria per fer el registre
@@ -31,10 +32,10 @@ end
 group Produir un nou vehicle
     create "vehicle:Vehicle_produït" as vehicle
     administrador -> vehicle: <<create>>
-    administrador -> vehicle: setModel(model)
     note right: vehicle precisa d'un model que determina com s'ha de construir
     administrador -> fabric: afegir_vehicle_produit(vehicle, data, linia_produccio)
-    fabric -> inventari_fabrica: elimina les peces necesaries per la producció del vehicle
+    fabric -> inventari_fabrica: elimina_peces(codi, quantitat)
+    note right: elimina les peces necesaries per la producció del vehicle
     create "registre:Registre_producció" as registre
     fabric -> registre: <<create>>
     registre --> fabric: afegim el registre a la llista de registres de vehicles produït

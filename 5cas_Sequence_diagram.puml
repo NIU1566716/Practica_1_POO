@@ -1,0 +1,41 @@
+@startuml 
+create "peces_model:Peces" as peces2
+administrador -> peces2: <<create>>
+create "inventari_model:Inventari_peces" as inventari2
+administrador -> inventari2: <<create>>
+create "model:Model" as model
+administrador -> model: <<create>>
+group Consulta de si es posible produir un model
+    administrador -> fabric: consulta_posibilitat_produccio(model)
+    fabric -> model: GetInventari()
+    model --> fabric: Inventari_model
+    loop Revisem totes les peces a l'inventari del model o fins que hi hagi una falla
+    fabric -> inventari2:GetPeces()
+    inventari2 -> fabric: peces_model
+    note right: retorna una de les peces, que agrupem a peces_model
+    fabric -> peces2: getCodi()
+    peces2 --> fabric: codi
+    fabric -> inventari: consulta_peces_inventari(codi)
+        alt Si la peça esta a l'inventari
+        inventari --> fabric: True 
+        fabric -> inventari: GetCodiQuantitat(codi)
+        inventari --> fabric: quantitat
+        fabric -> inventari2: GetCodiQuantitat(codi)
+        inventari2 --> fabric: quantitat
+            alt les quantitats no coincideixen
+            fabric --> administrador: False
+            else les quantitats coincideixen, no canviem res, continuem amb el bucle fins que falli o hagem visitat totes les peces necesaries per al model
+            end
+        else La peça no esta a l'inventari
+        inventari --> fabric: False
+        fabric --> administrador: False
+        end
+
+    end
+    
+note right: Estem a un bucle while que s'aturà si ni hi ha coincidència
+alt Si s'ha recorregut tot el bucle sense falles
+fabric --> administrador: True
+end
+end
+@enduml
